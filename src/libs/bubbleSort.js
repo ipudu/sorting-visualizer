@@ -1,29 +1,26 @@
-const bubbleSort = (array) => {
+const bubbleSort = (randomArray) => {
   const animations = [];
-  const auxillaryArray = array.slice();
-  const N = auxillaryArray.length;
+  const array = randomArray.slice();
+  const N = array.length;
 
   let j = N - 1;
 
   while (j > 0) {
     for (let i = 0; i < j; i++) {
-      animations.push(['comparision1', i, i + 1]);
-      animations.push(['comparision2', i, i + 1]);
+      animations.push(['compare', i, array[i], i + 1, array[i + 1]]);
+      animations.push(['changeBack', i, array[i], i + 1, array[i + 1]]);
 
-      if (auxillaryArray[i] > auxillaryArray[i + 1]) {
-        animations.push(['swap', i, auxillaryArray[i + 1]]);
-        animations.push(['swap', i + 1, auxillaryArray[i]]);
+      if (array[i] > array[i + 1]) {
+        animations.push(['swap', i, array[i + 1], i + 1, array[i]]);
 
         // Swap
-        [auxillaryArray[i], auxillaryArray[i + 1]] = [
-          auxillaryArray[i + 1],
-          auxillaryArray[i],
-        ];
+        [array[i], array[i + 1]] = [array[i + 1], array[i]];
       }
     }
+    animations.push(['sorted', j, array[j], j, array[j]]);
     j -= 1;
   }
-  return [auxillaryArray, animations];
+  return [array, animations];
 };
 
 export default bubbleSort;

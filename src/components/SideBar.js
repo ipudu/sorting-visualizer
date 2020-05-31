@@ -20,8 +20,13 @@ const ALGORITHMS = [
   'Tim Sort',
 ];
 
-const PRIMARY_COLOR = '#3fc1c9';
-const SECONDARY_COLOR = '#fc5185';
+const COLORS = {
+  compare: '#d92027',
+  changeBack: '#35d0ba',
+  swap: '#35d0ba',
+  overWrite: '#ffcd3c',
+  sorted: '#ffcd3c',
+};
 
 const SideBar = () => {
   const [numbers, setNumbers] = useContext(SortingVisualizerContext);
@@ -35,41 +40,49 @@ const SideBar = () => {
     'Selection Sort': selectionSort,
   };
 
+  const changeBars = (color, barOne, barOneValue, barTwo, barTwoValue) => {
+    const arrayBars = document.getElementsByClassName('array-bar');
+
+    arrayBars[barOne].style.backgroundColor = color;
+    arrayBars[barOne].style.height = `${barOneValue}vh`;
+    if (arrayBars[barOne].textContent !== '') {
+      arrayBars[barOne].textContent = `${barOneValue}`;
+    }
+
+    arrayBars[barTwo].style.backgroundColor = color;
+    arrayBars[barTwo].style.height = `${barTwoValue}vh`;
+    if (arrayBars[barTwo].textContent !== '') {
+      arrayBars[barTwo].textContent = `${barTwoValue}`;
+    }
+  };
+
+  const changeBarColorBack = () => {
+    [].map.call(document.getElementsByClassName('array-bar'), (bar) => {
+      bar.style.backgroundColor = `${COLORS.changeBack}`;
+    });
+  };
+
   const start = () => {
     // hide start button
     setShowStartButton(false);
+
     const [sortedArray, animations] = sortingAlgorithms[algorithm](numbers);
 
     for (let i = 0; i < animations.length; i++) {
-      const isColorChange =
-        animations[i][0] === 'comparision1' ||
-        animations[i][0] === 'comparision2';
-      const arrayBars = document.getElementsByClassName('array-bar');
-
-      if (isColorChange === true) {
-        const color =
-          animations[i][0] === 'comparision1' ? SECONDARY_COLOR : PRIMARY_COLOR;
-        const [, barOneIndex, barTwoIndex] = animations[i];
-        const barOneStyle = arrayBars[barOneIndex].style;
-        const barTwoStyle = arrayBars[barTwoIndex].style;
-
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
-        }, (i * 1000) / speed);
-      } else {
-        const [, barIndex, newNumber] = animations[i];
-        const bar = arrayBars[barIndex];
-        setTimeout(() => {
-          bar.style.height = `${newNumber}vh`;
-          if (bar.textContent !== '') bar.textContent = `${newNumber}`;
-        }, (i * 1000) / speed);
-      }
+      setTimeout(() => {
+        const color = COLORS[animations[i][0]];
+        const [, barOne, barOneValue, barTwo, barTwoValue] = animations[i];
+        changeBars(color, barOne, barOneValue, barTwo, barTwoValue);
+      }, (i * 1000) / speed);
     }
 
     setTimeout(() => {
+      // change color back
+      changeBarColorBack();
+
       // show start button
       setShowStartButton(true);
+
       setNumbers(sortedArray);
     }, (animations.length * 1000) / speed);
   };
