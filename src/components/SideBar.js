@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Header = () => (
   <div className="header text-center">
@@ -23,6 +23,12 @@ const SideBar = (props) => {
     'Tim Sort',
     'Heap Sort',
   ];
+
+  const [showStartButton, setShowStartButton] = useState(false);
+
+  useEffect(() => {
+    setShowStartButton(!showStartButton);
+  }, [props.isSorting]);
 
   const howFast = (speed) => {
     if (speed >= 700) {
@@ -85,13 +91,30 @@ const SideBar = (props) => {
         </div>
 
         <div className="form-group">
-          <button
-            type="button"
-            className="btn btn-primary btn-lg btn-block start-button"
-            onClick={props.start}
-          >
-            <i className="start fas fa-play-circle fa-2x"></i>
-          </button>
+          {showStartButton ? (
+            <button
+              type="button"
+              className="button btn btn-primary btn-lg btn-block"
+              onClick={() => {
+                setShowStartButton(!showStartButton);
+                props.start();
+              }}
+            >
+              <i className="start fas fa-play-circle fa-2x"></i>
+            </button>
+          ) : (
+            <button
+              className="button btn btn-success btn-lg btn-block"
+              type="button"
+              disabled
+            >
+              <span
+                className="spinner-border"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          )}
         </div>
       </form>
 

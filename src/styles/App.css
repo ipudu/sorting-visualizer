@@ -98,6 +98,9 @@ body {
   background: #d3d3d3;
 }
 
+.button {
+  height: 40;
+}
 .start {
   display: block;
 }

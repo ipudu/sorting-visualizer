@@ -14,6 +14,7 @@ const App = () => {
   const [numbers, setNumbers] = useState(resetArray(10));
   const [speed, setSpeed] = useState(10);
   const [algorithm, setAlgorithm] = useState('Bubble Sort');
+  const [isSorting, setIsSorting] = useState(false);
 
   const changeArraySize = (newSize) => {
     setNumbers(resetArray(newSize));
@@ -61,6 +62,10 @@ const App = () => {
         }, (i * 1000) / speed);
       }
     }
+
+    setTimeout(() => {
+      setIsSorting(!isSorting);
+    }, (animations.length * 1000) / speed);
   };
 
   return (
@@ -73,6 +78,7 @@ const App = () => {
         algorithm={algorithm}
         changeAlgorithm={changeAlgorithm}
         start={start}
+        isSorting={isSorting}
       />
       <Visualizer numbers={numbers} />
     </div>
