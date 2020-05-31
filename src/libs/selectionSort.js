@@ -19,7 +19,7 @@ const selectionSort = (array) => {
     ];
   }
 
-  return animations;
+  return [auxillaryArray, animations];
 };
 
 export default selectionSort;

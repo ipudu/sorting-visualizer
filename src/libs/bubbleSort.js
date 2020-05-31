@@ -23,7 +23,7 @@ const bubbleSort = (array) => {
     }
     j -= 1;
   }
-  return animations;
+  return [auxillaryArray, animations];
 };
 
 export default bubbleSort;

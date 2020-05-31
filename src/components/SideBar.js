@@ -1,34 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 
-const Header = () => (
-  <div className="header text-center">
-    <h1>Sorting Visualizer</h1>
-  </div>
-);
+import Header from './Header';
+import StartButton from './Buttons/StartButton';
+import SpinnerButton from './Buttons/SpinnerButton';
+import ResetButton from './Buttons/ResetButton';
+import Footer from './Footer';
 
-const Footer = () => (
-  <div className="footer text-center">
-    Made with <i className="fas fa-heart fa-lg heart"></i> by
-    <a href="https://pudu.io"> Pu Du</a>
-  </div>
-);
+import { bubbleSort, selectionSort } from '../libs/';
+import { SortingVisualizerContext } from './SortingVisualizerContext';
+import resetArray from '../libs/helper';
 
-const SideBar = (props) => {
-  const algos = [
-    'Bubble Sort',
-    'Insertion Sort',
-    'Selection Sort',
-    'Merge Sort',
-    'Quick Sort',
-    'Tim Sort',
-    'Heap Sort',
-  ];
+const ALGORITHMS = [
+  'Bubble Sort',
+  'Insertion Sort',
+  'Selection Sort',
+  'Merge Sort',
+  'Quick Sort',
+  'Tim Sort',
+  'Heap Sort',
+];
 
-  const [showStartButton, setShowStartButton] = useState(false);
+const PRIMARY_COLOR = '#3fc1c9';
+const SECONDARY_COLOR = '#fc5185';
 
-  useEffect(() => {
-    setShowStartButton(!showStartButton);
-  }, [props.isSorting]);
+const SideBar = () => {
+  const [numbers, setNumbers] = useContext(SortingVisualizerContext);
+  const [speed, setSpeed] = useState(10);
+  const [algorithm, setAlgorithm] = useState('Bubble Sort');
+  const [showStartButton, setShowStartButton] = useState(true);
+
+  const sortingAlgorithms = {
+    'Bubble Sort': bubbleSort,
+    'Selection Sort': selectionSort,
+  };
+
+  const start = () => {
+    setShowStartButton(false);
+    const [sortedArray, animations] = sortingAlgorithms[algorithm](numbers);
+
+    for (let i = 0; i < animations.length; i++) {
+      const isColorChange =
+        animations[i][0] === 'comparision1' ||
+        animations[i][0] === 'comparision2';
+      const arrayBars = document.getElementsByClassName('array-bar');
+
+      if (isColorChange === true) {
+        const color =
+          animations[i][0] === 'comparision1' ? SECONDARY_COLOR : PRIMARY_COLOR;
+        const [, barOneIndex, barTwoIndex] = animations[i];
+        const barOneStyle = arrayBars[barOneIndex].style;
+        const barTwoStyle = arrayBars[barTwoIndex].style;
+
+        setTimeout(() => {
+          barOneStyle.backgroundColor = color;
+          barTwoStyle.backgroundColor = color;
+        }, (i * 1000) / speed);
+      } else {
+        const [, barIndex, newNumber] = animations[i];
+        const bar = arrayBars[barIndex];
+        setTimeout(() => {
+          bar.style.height = `${newNumber}vh`;
+          if (bar.textContent !== '') bar.textContent = `${newNumber}`;
+        }, (i * 1000) / speed);
+      }
+    }
+
+    setTimeout(() => {
+      setShowStartButton(true);
+      setNumbers(sortedArray);
+    }, (animations.length * 1000) / speed);
+  };
 
   const howFast = (speed) => {
     if (speed >= 700) {
@@ -40,7 +81,7 @@ const SideBar = (props) => {
     }
   };
 
-  const describeSpeed = howFast(props.speed);
+  const describeSpeed = howFast(speed);
 
   return (
     <div className="side-bar d-flex flex-column justify-content-center">
@@ -48,15 +89,15 @@ const SideBar = (props) => {
 
       <form>
         <div className="form-group">
-          <label>Array Size: {props.arraySize}</label>
+          <label>Array Size: {numbers.length}</label>
           <input
             className="slider gray"
             type="range"
             min="10"
             max="100"
-            value={props.arraySize}
+            value={numbers.length}
             onChange={(e) => {
-              props.changeArraySize(e.target.value);
+              setNumbers(resetArray(e.target.value));
             }}
           />
         </div>
@@ -68,10 +109,8 @@ const SideBar = (props) => {
             type="range"
             min="1"
             max="1000"
-            value={props.speed}
-            onChange={(e) => {
-              props.changeSpeed(e.target.value);
-            }}
+            value={speed}
+            onChange={(e) => setSpeed(e.target.value)}
           />
         </div>
 
@@ -79,10 +118,10 @@ const SideBar = (props) => {
           <label>Sorting Algorithm</label>
           <select
             className="form-control"
-            value={props.algorithm}
-            onChange={(e) => props.changeAlgorithm(e.target.value)}
+            value={algorithm}
+            onChange={(e) => setAlgorithm(e.target.value)}
           >
-            {algos.map((a, i) => (
+            {ALGORITHMS.map((a, i) => (
               <option key={i} value={a}>
                 {a}
               </option>
@@ -92,28 +131,12 @@ const SideBar = (props) => {
 
         <div className="form-group">
           {showStartButton ? (
-            <button
-              type="button"
-              className="button btn btn-primary btn-lg btn-block"
-              onClick={() => {
-                setShowStartButton(!showStartButton);
-                props.start();
-              }}
-            >
-              <i className="start fas fa-play-circle fa-2x"></i>
-            </button>
+            <StartButton start={start} />
           ) : (
-            <button
-              className="button btn btn-success btn-lg btn-block"
-              type="button"
-              disabled
-            >
-              <span
-                className="spinner-border"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            </button>
+            <>
+              <SpinnerButton />
+              <ResetButton />
+            </>
           )}
         </div>
       </form>
