@@ -6,18 +6,18 @@ import SpinnerButton from './Buttons/SpinnerButton';
 import ResetButton from './Buttons/ResetButton';
 import Footer from './Footer';
 
-import { bubbleSort, selectionSort } from '../libs/';
+import { bubbleSort, insertionSort, selectionSort } from '../libs/';
 import { SortingVisualizerContext } from './SortingVisualizerContext';
 import resetArray from '../libs/helper';
 
 const ALGORITHMS = [
   'Bubble Sort',
   'Insertion Sort',
-  'Selection Sort',
+  'Heap Sort',
   'Merge Sort',
   'Quick Sort',
+  'Selection Sort',
   'Tim Sort',
-  'Heap Sort',
 ];
 
 const PRIMARY_COLOR = '#3fc1c9';
@@ -31,10 +31,12 @@ const SideBar = () => {
 
   const sortingAlgorithms = {
     'Bubble Sort': bubbleSort,
+    'Insertion Sort': insertionSort,
     'Selection Sort': selectionSort,
   };
 
   const start = () => {
+    // hide start button
     setShowStartButton(false);
     const [sortedArray, animations] = sortingAlgorithms[algorithm](numbers);
 
@@ -66,6 +68,7 @@ const SideBar = () => {
     }
 
     setTimeout(() => {
+      // show start button
       setShowStartButton(true);
       setNumbers(sortedArray);
     }, (animations.length * 1000) / speed);
