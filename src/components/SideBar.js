@@ -6,37 +6,36 @@ import SpinnerButton from './Buttons/SpinnerButton';
 import ResetButton from './Buttons/ResetButton';
 import Footer from './Footer';
 
-import { bubbleSort, insertionSort, selectionSort } from '../libs/';
+import { bubbleSort, insertionSort, mergeSort, selectionSort } from '../libs/';
 import { SortingVisualizerContext } from './SortingVisualizerContext';
 import resetArray from '../libs/helper';
 
 const ALGORITHMS = [
   'Bubble Sort',
   'Insertion Sort',
-  'Heap Sort',
   'Merge Sort',
-  'Quick Sort',
   'Selection Sort',
-  'Tim Sort',
 ];
 
 const COLORS = {
   compare: '#d92027',
   changeBack: '#35d0ba',
   swap: '#35d0ba',
-  overWrite: '#ffcd3c',
+  overWrite: '#ff9234',
   sorted: '#ffcd3c',
 };
 
 const SideBar = () => {
-  const [numbers, setNumbers] = useContext(SortingVisualizerContext);
+  const { numbers, setNumbers, algorithm, setAlgorithm } = useContext(
+    SortingVisualizerContext
+  );
   const [speed, setSpeed] = useState(10);
-  const [algorithm, setAlgorithm] = useState('Bubble Sort');
   const [showStartButton, setShowStartButton] = useState(true);
 
   const sortingAlgorithms = {
     'Bubble Sort': bubbleSort,
     'Insertion Sort': insertionSort,
+    'Merge Sort': mergeSort,
     'Selection Sort': selectionSort,
   };
 
@@ -44,15 +43,19 @@ const SideBar = () => {
     const arrayBars = document.getElementsByClassName('array-bar');
 
     arrayBars[barOne].style.backgroundColor = color;
-    arrayBars[barOne].style.height = `${barOneValue}vh`;
-    if (arrayBars[barOne].textContent !== '') {
-      arrayBars[barOne].textContent = `${barOneValue}`;
+    if (barOneValue !== null) {
+      arrayBars[barOne].style.height = `${barOneValue}vh`;
+      if (arrayBars[barOne].textContent !== '') {
+        arrayBars[barOne].textContent = `${barOneValue}`;
+      }
     }
 
     arrayBars[barTwo].style.backgroundColor = color;
-    arrayBars[barTwo].style.height = `${barTwoValue}vh`;
-    if (arrayBars[barTwo].textContent !== '') {
-      arrayBars[barTwo].textContent = `${barTwoValue}`;
+    if (barTwoValue !== null) {
+      arrayBars[barTwo].style.height = `${barTwoValue}vh`;
+      if (arrayBars[barTwo].textContent !== '') {
+        arrayBars[barTwo].textContent = `${barTwoValue}`;
+      }
     }
   };
 
