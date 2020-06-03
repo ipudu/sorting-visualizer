@@ -6,7 +6,13 @@ import SpinnerButton from './Buttons/SpinnerButton';
 import ResetButton from './Buttons/ResetButton';
 import Footer from './Footer';
 
-import { bubbleSort, insertionSort, mergeSort, selectionSort } from '../libs/';
+import {
+  bubbleSort,
+  insertionSort,
+  mergeSort,
+  selectionSort,
+  quickSort,
+} from '../libs/';
 import { SortingVisualizerContext } from './SortingVisualizerContext';
 import resetArray from '../libs/helper';
 
@@ -14,6 +20,7 @@ const ALGORITHMS = [
   'Bubble Sort',
   'Insertion Sort',
   'Merge Sort',
+  'Quick Sort',
   'Selection Sort',
 ];
 
@@ -36,6 +43,7 @@ const SideBar = () => {
     'Bubble Sort': bubbleSort,
     'Insertion Sort': insertionSort,
     'Merge Sort': mergeSort,
+    'Quick Sort': quickSort,
     'Selection Sort': selectionSort,
   };
 
